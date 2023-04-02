@@ -71,7 +71,7 @@ Integer Operations
   - But have to concerned about overflow --> we will cover this in Overflow part
 ### 5. Multplication
 - Multiply : left shift x << y &rarr; $x * 2^y$
-- Divide : right shift x >> y &rarr; $x/2^y$
+- Divide : right shift x >> y &rarr; $x / 2^y$
 
 Overflow
 --------
@@ -88,3 +88,4 @@ Overflow
 - So, overflow mean result unmatch with predicted result
 - Signed overflow is different from unsigned overflow
   - When overflow occur, go to biggest/smallest(not to zero)
+  - biggest, smallest value match with zero
