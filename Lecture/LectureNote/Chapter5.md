@@ -49,6 +49,20 @@ RISC-V Instruction Set Architecture
 - PC-relative Addressing
   - Addressing data inside memory by using relative address of PC's address
 
+Translate Program & Execute
+---------------------------
+### 1. Compiler
+- C program to assembly language program
+- gcc -march=rv32i -mabi-ilp32 -O0 -S sum.c
+- riscv64-unknown-elf-gcc -march=rv32i -mabi-ilp32 -O -S sum.c
+
+### 2. Assembler
+- Assembly language to Machine language
+- Optimization Example
+  - mv x10, x11 &rarr; move x11 data to x10
+  - equal to addi x10, x11, 0 %rarr; x10 = x11 + 0
+
+### 3. Linker
 
 RISC-V Operations & Operands
 ----------------------------
@@ -98,7 +112,7 @@ RISC-V Operations & Operands
 
     | funct7 |  rs2   |  rs1   | funct3 |   rd   | opcode |
     | :----: | :----: | :----: | :----: | :----: | :----: |
-    | 7-bits | 5-bits | 5-bits | 3-bits | 5-bits | 7-bits |
+    | 7-bits | 5-bits | 5-bits | 3-bits | 5-bits | 7-bits |  
     - opcode : operation code
     - rd     : destination register
     - funct3 : extra opcodee

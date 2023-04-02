@@ -62,12 +62,29 @@ Integer Operations
 ### 3. Shift Operation
 | operation | effect                                         | example          |
 | --------- | ---------------------------------------------- | ---------------- |
-| <<        | Left shift - always fill with 0                | 1011 << 2 = 1100 |
-| >>        | Right shift - unsigned : zero, signed : MSBits | 1011 >> 1 = 1101 |
+| <<        | Left shift - always fill with zero                | 1011 << 2 = 1100 |
+| >>        | Right shift - logical : zero, Arithemetic : sign bits | 1011 >> 1 = 1101 |
+- Signed integer : logical operation
+- Unsigned integer : Arithmetic operation
 ### 4. Addition
 - Simple binary addition : very easy
   - But have to concerned about overflow --> we will cover this in Overflow part
 ### 5. Multplication
+- Multiply : left shift x << y &rarr; $x * 2^y$
+- Divide : right shift x >> y &rarr; $x/2^y$
 
 Overflow
 --------
+1. Unsigned Addition
+- Occur when $ret > 2^w$
+- How it works?
+  - Work like modular operation
+  - Ingnore carry bit
+2. Signed Addition
+- Occur only when two input's sign is same
+  - carry bit occur != overflow occur
+  - ex) $-1 -1 = 1111_{(2)} + 1111_{(2)} = 11110_{(2)} = 1110_{(2)} = -2$
+    - We call this process as ignore bit
+- So, overflow mean result unmatch with predicted result
+- Signed overflow is different from unsigned overflow
+  - When overflow occur, go to biggest/smallest(not to zero)
