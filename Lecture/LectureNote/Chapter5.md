@@ -68,15 +68,61 @@ RISC-V Operations & Operands
 ----------------------------
 ### 1. Opeartions : only work between registers
 1. Arithmetic
-    - add &rarr; add a, b, c : b + c to a
-    - sub &rarr; sub a, b, c : b - c to a
-    - ex) f = (g + h) - (i + j);
-      - add  t0  i   j
-      - add  t1  g   h
-      - sub  f   t0  t1
+
+| Instruction                 | Type  | Example              | Meaning                                  |
+| :-------------------------- | :---: | :------------------- | :--------------------------------------- |
+| Add                         |   R   | add rd, rs1, rs2     | R[rd] = R[rs1] + R[rs2]                  |
+| Subtract                    |   R   | sub rd, rs1, rs2     | R[rd] = R[rs1] - R[rs2]                  |
+| Add imm.                    |   I   | addi rd, rs1, imm12  | R[rd] = R[rs1] + SignExt(imm12)          |
+| Set less than               |   R   | slt rd, rs1, rs2     | R[rd] = (R[rs1] < R[rs2])? 1 : 0         |
+| Set less than imm.          |   I   | slti rd, rs1, imm12  | R[rd] = (R[rs1] < SignExt(imm12))? 1 : 0 |
+| Set less than unsigned      |   R   | sltu rd, rs1, rs2    | R[rd] = (R[rs1] < R[rs2])? 1 : 0         |
+| Set less than imm. unsigned |   I   | sltiu rd, rs1, imm12 | R[rd] = (R[rs1] < SignExt(imm12))? 1 : 0 |
+| Load upper imm.             |   U   | lui rd, imm20        | R[rd] = SignExt(imm20 << 12)             |
+| Add upper imm. to PC        |   U   | auipc rd, imm20      | R[rd] = PC + SignExt(imm20 << 12)        |
+
+    ex) f = (g + h) - (i + j);
+      add  t0  i   j
+      add  t1  g   h
+      sub  f   t0  t1
 2. Logical
 
+| Instruction                 | Type  | Example             | Meaning                          |
+| :-------------------------- | :---: | :------------------ | :------------------------------- |
+| AND                         |   R   | and rd, rs1, rs2    | R[rd] = R[rs1] & R[rs2]          |
+| OR                          |   R   | or rd, rs1, rs2     | R[rd] = R[rs1] \| R[rs2]         |
+| XOR                         |   R   | xor rd, rs1, rs2    | R[rd] = R[rs1] ^ R[rs2]          |
+| AND immediate               |   I   | andi rd, rs1, imm12 | R[rd] = R[rs1] & SignExt(imm12)  |
+| OR immediate                |   I   | ori rd, rs1, imm12  | R[rd] = R[rs1] \| SignExt(imm12) |
+| XOR immediate               |   I   | xori rd, rs1, imm12 | R[rd] = R[rs1] ^ SignExt(imm12)  |
+| Shift left                  |   R   | sll rd, rs1, rs2    | R[rd] = R[rs1] << R[rs2]         |
+| Shift right logical         |   R   | srl rd, rs1, rs2    | R[rd] = R[rs1] >> R[rs2]         |
+| Shift right arithmetic      |   R   | sra rd, rs1, rs2    | R[rd] = R[rs1] >> R[rs2]         |
+| Shift left logical imm.     |   U   | slli rd, rs1, shamt | R[rd] = R[rs1] << shamt          |
+| Shift right logical imm.    |   U   | srli rd, rs1, shamt | R[rd] = R[rs1] >> shamt          |
+| Shift left arithemetic imm. |   U   | srai rd, rs1, shamt | R[rd] = R[rs1] >> shamt          |
 
+3. Save/Load
+ - load byte(1-byte), halfword(2-byte), word(4-byte), doubleword(8-byte)
+ - Extension rule
+   - in 64-bits system &rarr; byte to word load doesn't match with register's size
+     - must extend!
+   - for this extension we have to seperate to type of loading 
+   - cf) in 32-bits system, we can't use ld for loading data(32-bits register)
+   - 
+| Instruction            | Type  | Example            | Meaning                                       |
+| :--------------------- | :---: | :----------------- | :-------------------------------------------- |
+| Load doubleword        |   I   | ld rd, imm12(rs1)  | R[rd] = Mem[R[rs1]+ SignExt(imm12)]           |
+| Load word              |   I   | lw rd, imm12(rs1)  | R[rd] = SignExt( Mem[R[rs1]+ SignExt(imm12)]) |
+| Load halfword          |   I   | lh rd, imm12(rs1)  | R[rd] = SignExt( Mem[R[rs1]+ SignExt(imm12)]) |
+| Load byte              |   I   | lb rd, imm12(rs1)  | R[rd] = SignExt( Mem[R[rs1]+ SignExt(imm12)]) |
+| Load word unsigned     |   I   | lwu rd, imm12(rs1) | R[rd] = ZeroExt( Mem[R[rs1]+ SignExt(imm12)]) |
+| Load halfword unsigned |   I   | lhu rd, imm12(rs1) | R[rd] = ZeroExt( Mem[R[rs1]+ SignExt(imm12)]) |
+| Load byte unsigned     |   I   | lbu rd, imm12(rs1) | R[rd] = ZeroExt( Mem[R[rs1]+ SignExt(imm12)]) |
+| Store doubleword       |   S   | sd rs2, imm12(rs1) | R[rs2] = Mem[R[rs1]+ SignExt(imm12)]          |
+| Store word             |   S   | sw rs2, imm12(rs1) | R[rs2] = Mem[R[rs1]+ SignExt(imm12)]          |
+| Store halfword         |   S   | sh rs2, imm12(rs1) | R[rs2] = Mem[R[rs1]+ SignExt(imm12)]          |
+| Store byte             |   S   | sb rs2, imm12(rs1) | R[rs2] = Mem[R[rs1]+ SignExt(imm12)]          |
 ### 2. Operands
 1. Memory operands
    1. lw(load word)
@@ -112,7 +158,7 @@ RISC-V Operations & Operands
 
     | funct7 |  rs2   |  rs1   | funct3 |   rd   | opcode |
     | :----: | :----: | :----: | :----: | :----: | :----: |
-    | 7-bits | 5-bits | 5-bits | 3-bits | 5-bits | 7-bits |  
+    | 7-bits | 5-bits | 5-bits | 3-bits | 5-bits | 7-bits |
     - opcode : operation code
     - rd     : destination register
     - funct3 : extra opcodee
@@ -138,4 +184,19 @@ RISC-V Operations & Operands
       - x9 &rarr; rd
       - 32 &rarr; immediate
       - x22 &rarr; rs1
+    4. Upper Immediate : U-type
+   
+    | immediate |   rd   | opcode |
+    | :-------: | :----: | :----: |
+    |  20-bits  | 5-bits | 7-bits |
+    - lui, auipc matching with this type
+    - ex) lui x6, 0x12345
+      - lui &rarr; opcode
+      - x6 &rarr; rd
+      - 0x12345 &rarr; immediate
+      - result &rarr; x6 : 0x12345000
+    - Interesting way to store immediate using lui
+      - guess we want to store 0x12345678 in x7
+      - lui   x7, 0x12345 &rarr; x7 : 0x*12345*000
+      - addi  x7, x7, 0x678 &rarr; x7 : 0x12345*678*
 2. s
