@@ -101,6 +101,7 @@ RISC-V Operations & Operands
 | Shift left logical imm.     |   U   | slli rd, rs1, shamt | R[rd] = R[rs1] << shamt          |
 | Shift right logical imm.    |   U   | srli rd, rs1, shamt | R[rd] = R[rs1] >> shamt          |
 | Shift left arithemetic imm. |   U   | srai rd, rs1, shamt | R[rd] = R[rs1] >> shamt          |
+- NOT operation is replaced with xor 11...1
 
 3. Save/Load
  - load byte(1-byte), halfword(2-byte), word(4-byte), doubleword(8-byte)
@@ -172,6 +173,13 @@ RISC-V Operations & Operands
     | :-------: | :----: | :----: | :----: | :----: |
     |  12-bits  | 5-bits | 3-bits | 5-bits | 7-bits |
     - immediate : save immediate value(two's complement) &rarr; $-2^{11}< x < 2^{11}-1$
+
+    | funct7 | immediate |  rs1   | funct3 |   rd   | opcode |
+    | :----: | :-------: | :----: | :----: | :----: | :----: |
+    | 6-bits |  6-bits   | 5-bits | 3-bits | 5-bits | 7-bits |
+    - Only use in immediate shift
+    - in shift, maximum immediate value is 32, so more than 6-bits is meanless
+      - so, using upper 6 bits for extra opcode(funct7)
 
     3. Store/Load case : S-type
 
