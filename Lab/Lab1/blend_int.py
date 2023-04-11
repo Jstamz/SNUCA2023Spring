@@ -55,25 +55,20 @@ def blend(img1, img2, height, width, channels, overlay, alpha):
             for c in range(channels):
                 if overlay == 1:
                     if c != 3:
-                        if img1[h][w][3] != 0:
-                            atmp = img1[h][w][3] + (img2[h][w][3] - img1[h][w][3]) * alpha
-
-                            multi1 = img1[h][w][c] * img1[h][w][3] * (256 - alpha)
-                            multi2 = img2[h][w][c] * img2[h][w][3] * alpha
-                            multi2 = (multi1 - multi2) * alpha
-
-                            blended[h][w][c] = (multi1 * multi2 + multi2) // atmp
-                        else:
-                            blended[h][w][c] = 0
+                        overlay_ratio = img2[h][w][3] * alpha >> 8
+                            
+                        multi1 = img1[h][w][c] * (256 - overlay_ratio) >> 8
+                        multi2 = img2[h][w][c] * overlay_ratio >> 8
+                        blended[h][w][c] = multi1 + multi2
                     else:
                         blended[h][w][c] = img1[h][w][c]
                 else:
                     if c != 3:
-                        multi1 = img1[h][w][c] * img1[h][w][3] * (256 - alpha)
-                        multi2 = img2[h][w][c] * img2[h][w][3] * alpha
-                        blended[h][w][c] = (multi1 + multi2) // (255 * 256)
+                        multi1 = (((img1[h][w][c]) * (img1[h][w][3]) >> 8) * (256 - alpha)) >> 8
+                        multi2 = (((img2[h][w][c]) * (img2[h][w][3]) >> 8) * alpha) >> 8
+                        blended[h][w][c] = multi1 + multi2
                     else:
-                        blended[h][w][c] = (img1[h][w][c] * (256 - alpha) + img2[h][w][c] * alpha) // 256
+                        blended[h][w][c] = (img1[h][w][3] * (256 - alpha) >> 8) + ((img2[h][w][3] * alpha) >> 8)
 
     return blended, bheight, bwidth, bchannels
 

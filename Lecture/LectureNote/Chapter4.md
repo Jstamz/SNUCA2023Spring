@@ -34,7 +34,9 @@ Representation
 - Infinity : set exp all 1 & set frac 0
     - Classify -Inf, +Inf with sign bit
 
-### 3. Rounding
+Operations
+----------
+### 1. Rounding
 - Round to even(most important)
     - 1.BBB<span style="color:red">GRS</span>...
         - G(Guard bit) - decide 0.5
@@ -49,4 +51,6 @@ Representation
         - 0X : less 0.5 - Down
             - delete lower bits
     
-### 4. Operations
+### 2. Addition
+
+### 3. Multiplication

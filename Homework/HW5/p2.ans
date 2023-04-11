@@ -1,0 +1,46 @@
+#  1 long problem2(int *a, long start, long end, long exclude_start, long exclude_end)
+#  2 {
+#  3   long chksum = -1;
+#  4 
+#  5   if (!a) return chksum;
+#  6 
+#  7   for (long p=start; p<end; p++) {
+#  8     if ((p < exclude_start) || (p >= exclude_end)) {
+#  9       chksum ^= a[p];
+# 10     }
+# 11   }
+# 12 
+# 13   return chksum;
+# 14 }
+
+
+        .file   "p2.c"                  # 
+        .text                           # 
+        .align  2                       # 
+        .globl  problem2                # 
+problem2:                               # (a0 = &(*a), a1 = start, a2 = end, a3 = exclude_start, a4 = exclude_end)
+        beq     a0,zero,.L6             # a0 == 0 ? goto .L6    if a0 equal to 0, goto .L6
+        bge     a1,a2,.L7               # a1 >= a2 ? goto .L7   if start great or equal then end, goto .L7
+        slli    a5,a1,2                 # a5 = a1 << 2          (p = 4*start)
+        add     a5,a0,a5                # a5 += a0              (p = &a + 4*start)
+        li      a0,-1                   # a0 = -1               (chksum = -1)
+        j       .L5                     # goto .L5
+.L3:                                    # do line #9
+        lw      a6,0(a5)                # a6 = load data in a5  (a6 = a[p])
+        xor     a0,a0,a6                # a0 ^= a6              (chksum ^= a[p])          
+.L4:                                    # for condition (line #7)
+        addi    a1,a1,1                 # a1 += 1               p++ - this one for just count
+        addi    a5,a5,4                 # a5 += 4               next memory address(4 because of int is 4byte) - actual data address
+        beq     a2,a1,.L9               # a2 >= a1 ? goto .L9   if p bigger or equal then end goto .L9
+.L5:                                    # check if condition (line #8)
+        bgt     a3,a1,.L3               # a3 > a1 ? goto .L3    if exclude_start bigger then p goto .L9 - break while loop
+        bgt     a4,a1,.L4               # a4 > a1 ? goto .L4    if exclude_end bigger then p goto .L9 - break while loop
+        j       .L3                     # goto .L3
+.L9:                                    # 
+        ret                             # return
+.L6:                                    # 
+        li      a0,-1                   # a0 = -1               (chksum = -1)
+        ret                             # return
+.L7:                                    # 
+        li      a0,-1                   # a0 = -1               (chksum = -1)
+        ret                             # return

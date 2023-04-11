@@ -88,10 +88,10 @@ def main():
     # Check that dimensions match and an alpha channel is present
     if height1 != height2 or width1 != width2:
         print(f"Image dimension mismatch\n"
-              f"  {args.image1}: {width1}x{height1}\n"
-              f"  {args.image2}: {width2}x{height2}")
+              f"  {args.image1}: {height1}x{width1}\n"
+              f"  {args.image2}: {height2}x{width2}")
         exit(1)
-    if height1 != height2 or width1 != width2 or channels1 != 4 or channels2 != 4:
+    if channels1 != 4 or channels2 != 4:
         print(f"Missing alpha channel\n"
               f"  {args.image1}: {'has' if channels1==4 else 'no'} alpha channel\n"
               f"  {args.image2}: {'has' if channels2==4 else 'no'} alpha channel")

@@ -58,30 +58,23 @@ def blend(img1, img2, height, width, channels, overlay, alpha):
             for c in range(channels):
                 if overlay == 1:
                     if c != 3:
-                        if img1[h][w][3] != 0:
-                            atmp = img1[h][w][3] + (img2[h][w][3] - img1[h][w][3]) * alpha
-
-                            multi1 = img1[h][w][c] * img1[h][w][3] * (1 - alpha)
-                            multi2 = img2[h][w][c] * img2[h][w][3] * alpha
-                            multi2 = (multi1 - multi2) * alpha  / (255 * 256)
-
-                            blended[h][w][c] = (multi1 + multi2) / atmp
-                        else:
-                            blended[h][w][c] = 0
+                        overlay_ratio = (img2[h][w][3] / 255.0) * alpha
+                            
+                        multi1 = (img1[h][w][c] / 255.0) * (1 - overlay_ratio)
+                        multi2 = (img2[h][w][c] / 255.0) * overlay_ratio
+                        blended[h][w][c] = int((multi1 + multi2) * 255.0)
                     else:
-                        blended[h][w][c] = int(img1[h][w][c])
+                        blended[h][w][c] = img1[h][w][c]
                 else:
                     if c != 3:
-                        multi1 = img1[h][w][c] * img1[h][w][3] * (1 - alpha)
-                        multi2 = img2[h][w][c] * img2[h][w][3] * alpha
-                        blended[h][w][c] = (multi1 + multi2) / (255 * 256)
+                        multi1 = (img1[h][w][c] / 255.0) * (img1[h][w][3] / 255.0) * (1 - alpha)
+                        multi2 = (img2[h][w][c] / 255.0) * (img2[h][w][3] / 255.0) * alpha
+                        blended[h][w][c] = int((multi1 + multi2) * 255.0)
                     else:
-                        blended[h][w][c] = ((img1[h][w][c] * (256 - alpha) + img2[h][w][c] * alpha) * 255.0) / (255 * 256)
+                        multi1 = (img1[h][w][c] / 255.0) * (1 - alpha)
+                        multi2 = (img2[h][w][c] / 255.0) * alpha
+                        blended[h][w][c] = int((multi1 + multi2) * 255.0)
 
-                blended[h][w][c] = int(blended[h][w][c])
-
-                if blended[h][w][c] > 255 | blended[h][w][c] < 0:
-                    print(h, w, c, blended[h][w][c])
     return blended, bheight, bwidth, bchannels
 
 

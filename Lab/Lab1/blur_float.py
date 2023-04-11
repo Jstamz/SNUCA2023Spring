@@ -50,9 +50,6 @@ def blur(image, height, width, channels, kernel_size=5):
     blurred   = [[[0 for c in range(bchannels)] for w in range(bwidth)] for h in range(bheight)]
     kernel = kernel_dict[kernel_size]
 
-    if kernel_size != 3 & kernel_size != 5 & kernel_size != 7:
-        raise ValueError('Kernel must be 3, 5, or 7')
-
     for h in range(bheight):
         for w in range(bwidth):
             for c in range(bchannels):
