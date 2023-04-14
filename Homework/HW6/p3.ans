@@ -1,0 +1,36 @@
+#  1 struct s {
+#  2   int key;         // 
+#  3   int value;       //
+#  4   struct s *next;  //
+#  5 };
+#  6 
+#  7 int problem3(struct s *list, int key)
+#  8 {
+#  9   while (list && (list->key != key)) {
+# 10     list = list->next;
+# 11   }
+# 12 
+# 13   return list ? list->value : -1;
+# 14 }
+
+
+        .file   "p3.c"
+        .text
+        .align  2
+        .globl  problem3
+problem3:                               # entry point
+                                        # a0 = struct s *list, a1 = int key
+        beq     a0,zero,.L10            # if a0 == 0 goto .L10
+.L2:                                    # 
+        lw      a5,0(a0)                # a5 = s[i].key
+        beq     a5,a1,.L11              # if a5 == a1 goto .L11
+        ld      a0,8(a0)                # ao = s[i].next
+        bne     a0,zero,.L2             # a0 != 0 goto .L2
+        li      a0,-1                   # set a0 = -1
+        ret                             # return -1
+.L10:                                   # 
+        li      a0,-1                   # set a0 = -1
+        ret                             # return -1
+.L11:                                   # 
+        lw      a0,4(a0)                # a0 = a0.value
+        ret                             # return
