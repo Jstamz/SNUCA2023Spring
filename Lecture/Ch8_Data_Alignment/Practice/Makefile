@@ -14,4 +14,4 @@ all: $(TARGETS)
 	cat $^ | awk '{ l++; printf "# %2d %s\n", l, $$0 }' > $@
 	printf "\n\n" >> $@
 	grep -vE "\.(option|attribute|type|size|ident)" .tmp | expand -t8 | awk '{printf("%-40s# \n",$$0)}' >> $@
-	rm -f .tmp
+	rm -f .tmpa
