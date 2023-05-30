@@ -1,0 +1,38 @@
+#  1 long problem1(long a, long b, long c, long d)
+#  2 {
+#  3   long p1 = 48*a + 36*b - c*d;
+#  4   if (a << 1 > b >> 1) p1 -= c;
+#  5   if ((b & 0xffff) > 0x8765) c += d;
+#  6   p1 += c;
+#  7 
+#  8   return p1;
+#  9 }
+
+
+        .file   "p1.c"                  # 
+        .text                           # 
+        .align  2                       # 
+        .globl  problem1                # 
+problem1:                               # a0 = a, a1 = b, a2 = c, a3 = d
+        slli    a4,a0,1                 # a4 = a << 1
+        add     a5,a4,a0                # a5 = a4 + a           (p1 = 3*a)
+        slli    a5,a5,4                 # a5 = a5 << 4          (51 = 48*a)
+        slli    a0,a1,3                 # a0 = b << 3           (a = b*8)
+        add     a0,a0,a1                # a0 += b               (a = b*9)
+        slli    a0,a0,2                 # a0 = a0 << 2          (a = b*36)
+        add     a5,a5,a0                # a5 += a0              (p1 = 48*a + 36*b)
+        mul     a0,a2,a3                # a0 = c*d
+        sub     a5,a5,a0                # a5 -= a0              (p1 = 48*a + 36*b - c*d)
+        srai    a0,a1,1                 # a0 = a1 >> 1          (a = b >> 1 - signed shift)
+        ble     a4,a0,.L2               # a4 <= a0 ? goto .L2   compare a4 with a0 and goto .L2 if a4 bigger than or equal to a0
+        sub     a5,a5,a2                # a5 -= a2              (p1 -= c)
+.L2:                                    # 
+        slli    a1,a1,48                # a1 = a1 << 48         (delete upper 48 byte of data in a1)
+        srli    a1,a1,48                # a1 = a1 >> 48         (put back left 16 byte data to original position)
+        li      a4,32768                # a4 = 32768
+        addi    a4,a4,1893              # a4 = a4 + 1893        (a4 = 32768 + 1893 = 34661 = 0x8765)
+        ble     a1,a4,.L3               # a1 <= a4 ? goto .L3   compare a1 with a4 and if less or equal than a4, goto L3
+        add     a2,a2,a3                # a2 = a2 + a3          (c += d)
+.L3:                                    # 
+        add     a0,a2,a5                # a0 = a2 + a5          (return_value = c + p1)
+        ret                             # return

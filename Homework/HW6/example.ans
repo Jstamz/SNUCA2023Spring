@@ -1,0 +1,51 @@
+#  1 #include <stdlib.h>
+#  2 
+#  3 long init(long *a, long from, long to)
+#  4 {
+#  5   long ninit = 0;
+#  6 
+#  7   for (long i=from; i<to; i++) {
+#  8     a[i] = (unsigned long)random() % 1024;
+#  9     ninit++;
+# 10   }
+# 11 
+# 12   return ninit;
+# 13 }
+
+
+        .file   "example.c"
+        .text
+        .align  2
+        .globl  init
+init:                                   # entry point of init
+										# a0 = a, a1 = from, a2 = to
+        bge     a1,a2,.L4               # test first case(is from >= to ? goto .L4)
+        addi    sp,sp,-48               # set stack frame 8*6 under(too save 5 arguments)
+        sd      ra,40(sp)               # save return address(callee - saved)
+        sd      s0,32(sp)               # save s0 (callee - saved)
+        sd      s1,24(sp)               # save s1 (callee - saved)
+        sd      s2,16(sp)               # save s2 (callee - saved)
+        sd      s3,8(sp)                # save s3 (callee - saved)
+        mv      s0,a1                   # s0 = from
+        mv      s2,a2                   # s2 = to
+        mv      s3,a1                   # s3 = from
+        slli    a5,a1,3                 # a5 = from * 8
+        add     s1,a0,a5                # s1 = a + s1(&a[from])
+.L3:                                    # 
+        call    random                  # call random function
+        andi    a0,a0,1023              # a0 = a0 + 1023(random() % 1024) -> left only low byte
+        sd      a0,0(s1)                # save a0 to a[s1](a[i])
+        addi    s0,s0,1                 # i++
+        addi    s1,s1,8                 # s1 = &a[i + from]
+        bne     s2,s0,.L3               # compare from with to for deciding loop
+        sub     a0,s0,s3                # a0 = i - from(to get ninit)
+        ld      ra,40(sp)               # restore return address
+        ld      s0,32(sp)               # restore s0
+        ld      s1,24(sp)               # restore s1
+        ld      s2,16(sp)               # restore s2
+        ld      s3,8(sp)                # restore s3
+        addi    sp,sp,48                # restore stack frame to origin
+        jr      ra                      # return to return address(actually beq x0,x0,ra)
+.L4:                                    # 
+        li      a0,0                    # set up retrun address as 0
+        ret                             # return
