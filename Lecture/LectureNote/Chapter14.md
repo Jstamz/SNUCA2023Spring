@@ -1,7 +1,18 @@
-Data Hazards
-============
-Arithemtic Hazard
------------------
+<!-- vscode-markdown-toc -->
+* 1. [Data Hazards](#DataHazards)
+		* 1.1. [Arithemtic Hazard](#ArithemticHazard)
+		* 1.2. [Load Hazard](#LoadHazard)
+* 2. [Control Hazards](#ControlHazards)
+* 3. [Exceptions](#Exceptions)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+##  1. <a name='DataHazards'></a>Data Hazards
+
+####  1.1. <a name='ArithemticHazard'></a>Arithemtic Hazard
 - Hazard occur due to arithemtic operation(e.g. add, sub, etc...)
 - Simply handle with data forwarding
     - Becuase, result can forward from EX/MEM register &rarr; no delay!
@@ -15,8 +26,7 @@ Arithemtic Hazard
     - MEM/WB to ID/EX
         - Same as forwarding but have recent is first(EX/MEM is prior than MEM/WB)
 
-Load Hazard
------------
+####  1.2. <a name='LoadHazard'></a>Load Hazard
 - Hazard occur due to load operation(e.g. lw, lb, etc...)
 - Unavoidable stall!
     - load operation's outcome can only forward at MEM/WB register -> &rarr; at least 1 cycle delay
@@ -34,8 +44,7 @@ Load Hazard
         - Stall PC update (PCWrite)
         - Keep IF/ID register (IF/IDWrite)
 
-Control Hazards
-===============
+##  2. <a name='ControlHazards'></a>Control Hazards
 - Reduce stall! : most important
     - make decision early : EX phase to ID phase
         - By checking equality of rs1, rs2
@@ -67,8 +76,7 @@ Control Hazards
                 - if prediction bits is valid, then get target address
                 - else not take target address
 
-Exceptions
-==========
+##  3. <a name='Exceptions'></a>Exceptions
 - Exception : Unpredictable data flow change
 
 - Interrupt : Event from external I/O controller

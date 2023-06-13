@@ -1,6 +1,3 @@
-Single Cycle Architecture
-=========================
-
 Parallel Architecture
 =====================
 
